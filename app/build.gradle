@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
+    testOptions.unitTests.includeAndroidResources true
+
+    defaultConfig {
+        applicationId "com.github.dmchoull.rxmvvmsample"
+        minSdkVersion 23
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+            useProguard false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // Android support libraries
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // Logging
+    implementation 'com.jakewharton.timber:timber:4.5.1'
+
+    // Test dependencies
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation junit5()
+    testImplementation junit5Params()
+    testCompileOnly junit5EmbeddedRuntime()
+
+    testImplementation 'org.mockito:mockito-core:2.8.47'
+    testImplementation 'org.robolectric:robolectric:3.4.2'
+    testImplementation 'org.robolectric:shadows-support-v4:3.3.2'
+    testImplementation 'org.assertj:assertj-core:3.8.0'
+    testImplementation 'com.squareup.assertj:assertj-android:1.2.0'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}

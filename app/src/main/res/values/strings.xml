@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">RxMVVM Sample</string>
+    <string name="city">City</string>
+    <string name="current_conditions">Current conditions for %1$s:</string>
+    <string name="temperature">Temperature</string>
+    <string name="temperature_c">%1$.1f˚C</string>
+
+    <string name="city_not_found">City not found</string>
+    <string name="bad_request">Bad Request</string>
+    <string name="connection_failed">Connection Failed</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

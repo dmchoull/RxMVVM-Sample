@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
 import com.github.salomonbrys.kodein.Kodein
@@ -43,7 +44,7 @@ class MainActivity : KodeinAppCompatActivity() {
                 RxView.clicks(searchButton)
                         .subscribe({ _ ->
                             viewModel.search(cityQuery.text.toString())
-                            cityQuery.setText("")
+                            onRequestStarted()
                         }),
 
                 viewModel.city
@@ -55,37 +56,42 @@ class MainActivity : KodeinAppCompatActivity() {
 
                 viewModel.currentConditions
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ conditions -> updateConditions(conditions) }),
+                        .doOnNext({ _ -> onRequestCompleted() })
+                        .subscribe(this::updateConditions),
 
                 viewModel.throwable
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext({ t -> Timber.e(t) })
+                        .doOnNext({ _ -> onRequestCompleted() })
                         .subscribe(this::showError)
         )
 
         viewModel.init()
     }
 
+    private fun onRequestStarted() {
+        cityQuery.setText("")
+        loadingIndicator.visibility = View.VISIBLE
+        searchButton.isEnabled = false
+    }
+
+    private fun onRequestCompleted() {
+        loadingIndicator.visibility = View.GONE
+        searchButton.isEnabled = true
+    }
+
     private fun updateConditions(conditions: WeatherConditions) {
-        currentTempLabel.visibility = View.VISIBLE
-        currentTemperature.visibility = View.VISIBLE
-        currentTemperature.text = getString(R.string.temperature_c, conditions.temp)
+        displayField(currentTempLabel, currentTemperature, getString(R.string.temperature_c, conditions.temp))
+        displayField(pressureLabel, pressure, conditions.pressure.toString())
+        displayField(humidityLabel, humidity, conditions.humidity.toString())
+        displayField(sunriseLabel, sunrise, dateFormat.format(conditions.sunrise))
+        displayField(sunsetLabel, sunset, dateFormat.format(conditions.sunset))
+    }
 
-        pressureLabel.visibility = View.VISIBLE
-        pressure.visibility = View.VISIBLE
-        pressure.text = conditions.pressure.toString()
-
-        humidityLabel.visibility = View.VISIBLE
-        humidity.visibility = View.VISIBLE
-        humidity.text = conditions.humidity.toString()
-
-        sunriseLabel.visibility = View.VISIBLE
-        sunrise.visibility = View.VISIBLE
-        sunrise.text = dateFormat.format(conditions.sunrise)
-
-        sunsetLabel.visibility = View.VISIBLE
-        sunset.visibility = View.VISIBLE
-        sunset.text = dateFormat.format(conditions.sunset)
+    private fun displayField(label: TextView, textField: TextView, value: String) {
+        label.visibility = View.VISIBLE
+        textField.visibility = View.VISIBLE
+        textField.text = value
     }
 
     private fun showError(throwable: Throwable) {

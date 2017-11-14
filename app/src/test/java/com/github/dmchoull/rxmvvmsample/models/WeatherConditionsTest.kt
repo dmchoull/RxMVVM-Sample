@@ -18,7 +18,7 @@ internal class WeatherConditionsTest {
         assertThat(weather.pressure).isEqualTo(weatherResponse.main.pressure)
         assertThat(weather.humidity).isEqualTo(weatherResponse.main.humidity)
         assertThat(weather.windSpeed).isEqualTo(weatherResponse.wind.speed)
-        assertThat(weather.sunrise).isEqualTo(Date(weatherResponse.sys.sunrise))
-        assertThat(weather.sunset).isEqualTo(Date(weatherResponse.sys.sunset))
+        assertThat(weather.sunrise).isEqualTo(Date(1510315612000L))
+        assertThat(weather.sunset).isEqualTo(Date(1510350963000L))
     }
 }

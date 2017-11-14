@@ -11,7 +11,7 @@ data class WeatherConditions(val temp: Double, val pressure: Double, val humidit
                         weatherResponse.main.pressure,
                         weatherResponse.main.humidity,
                         weatherResponse.wind.speed,
-                        Date(weatherResponse.sys.sunrise),
-                        Date(weatherResponse.sys.sunset))
+                        Date(weatherResponse.sys.sunrise * 1000),
+                        Date(weatherResponse.sys.sunset * 1000))
     }
 }

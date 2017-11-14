@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.android.KodeinAppCompatActivity
 import com.github.salomonbrys.kodein.bind
@@ -17,11 +18,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : KodeinAppCompatActivity() {
     internal val viewModel: MainViewModel by with(this as Activity).instance()
 
     private val disposables = CompositeDisposable()
+    private val dateFormat = SimpleDateFormat("h:mm a z", Locale.US)
 
     override fun provideOverridingModule() = Kodein.Module {
         bind<MainActivity>() with instance(this@MainActivity)
@@ -51,12 +55,7 @@ class MainActivity : KodeinAppCompatActivity() {
 
                 viewModel.currentConditions
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ weather ->
-                            currentTempLabel.visibility = View.VISIBLE
-                            currentTemperature.visibility = View.VISIBLE
-
-                            currentTemperature.text = getString(R.string.temperature_c, weather.temp)
-                        }),
+                        .subscribe({ conditions -> updateConditions(conditions) }),
 
                 viewModel.throwable
                         .observeOn(AndroidSchedulers.mainThread())
@@ -65,6 +64,28 @@ class MainActivity : KodeinAppCompatActivity() {
         )
 
         viewModel.init()
+    }
+
+    private fun updateConditions(conditions: WeatherConditions) {
+        currentTempLabel.visibility = View.VISIBLE
+        currentTemperature.visibility = View.VISIBLE
+        currentTemperature.text = getString(R.string.temperature_c, conditions.temp)
+
+        pressureLabel.visibility = View.VISIBLE
+        pressure.visibility = View.VISIBLE
+        pressure.text = conditions.pressure.toString()
+
+        humidityLabel.visibility = View.VISIBLE
+        humidity.visibility = View.VISIBLE
+        humidity.text = conditions.humidity.toString()
+
+        sunriseLabel.visibility = View.VISIBLE
+        sunrise.visibility = View.VISIBLE
+        sunrise.text = dateFormat.format(conditions.sunrise)
+
+        sunsetLabel.visibility = View.VISIBLE
+        sunset.visibility = View.VISIBLE
+        sunset.text = dateFormat.format(conditions.sunset)
     }
 
     private fun showError(throwable: Throwable) {

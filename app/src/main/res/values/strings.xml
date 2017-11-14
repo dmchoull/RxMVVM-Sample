@@ -4,6 +4,11 @@
     <string name="current_conditions">Current conditions for %1$s:</string>
     <string name="temperature">Temperature</string>
     <string name="temperature_c">%1$.1f˚C</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
 
     <string name="city_not_found">City not found</string>
     <string name="bad_request">Bad Request</string>

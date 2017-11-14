@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.IOException
 
 class MainActivity : KodeinAppCompatActivity() {
@@ -59,6 +60,7 @@ class MainActivity : KodeinAppCompatActivity() {
 
                 viewModel.throwable
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext({ t -> Timber.e(t) })
                         .subscribe(this::showError)
         )
 

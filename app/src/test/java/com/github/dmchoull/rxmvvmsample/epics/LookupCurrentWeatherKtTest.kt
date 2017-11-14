@@ -2,9 +2,11 @@ package com.github.dmchoull.rxmvvmsample.epics
 
 import com.github.dmchoull.rxmvvmsample.actions.ApiActions
 import com.github.dmchoull.rxmvvmsample.actions.EventBusActions
-import com.github.dmchoull.rxmvvmsample.api.*
+import com.github.dmchoull.rxmvvmsample.api.WeatherLookupAPI
+import com.github.dmchoull.rxmvvmsample.api.WeatherResponse
 import com.github.dmchoull.rxmvvmsample.extensions.RxImmediateScheduler
 import com.github.dmchoull.rxmvvmsample.reducers.AppState
+import com.github.dmchoull.rxmvvmsample.util.buildWeatherResponse
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.yheriatovych.reductor.Actions
@@ -27,19 +29,6 @@ internal class LookupCurrentWeatherKtTest {
         private val response: WeatherResponse = buildWeatherResponse()
         private val weatherLookupAPI = mock<WeatherLookupAPI> {
             on { lookupCurrentConditions("Toronto") } doReturn Observable.just(response)
-        }
-
-        private fun buildWeatherResponse(): WeatherResponse {
-            return WeatherResponse(
-                    Coord(-79.42, 43.7), emptyList(),
-                    Weather(-5.0, 1034.0, 41.0, -5.0, -3.0),
-                    14484,
-                    Wind(5.7, 320, 7.5),
-                    1234L,
-                    Sys("ca", 1510315612L, 1510350963L),
-                    6167865,
-                    "Toronto"
-            )
         }
 
         @Test

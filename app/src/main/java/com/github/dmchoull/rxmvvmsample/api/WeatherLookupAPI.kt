@@ -29,6 +29,6 @@ data class WeatherMoreInfo(val id: Int, val main: String, val description: Strin
 data class Weather(val temp: Double, val pressure: Double, val humidity: Double, val temp_min: Double,
                    val temp_max: Double)
 
-data class Wind(val speed: Double, val deg: Int, val gust: Double)
+data class Wind(val speed: Double, val deg: Double, val gust: Double)
 
 data class Sys(val country: String, val sunrise: Long, val sunset: Long)

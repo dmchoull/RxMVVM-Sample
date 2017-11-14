@@ -3,8 +3,8 @@ package com.github.dmchoull.rxmvvmsample
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.VisibleForTesting
 import com.github.dmchoull.rxmvvmsample.actions.ApiActions
-import com.github.dmchoull.rxmvvmsample.api.Weather
 import com.github.dmchoull.rxmvvmsample.eventbus.EventBus
+import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
 import com.github.dmchoull.rxmvvmsample.reducers.AppState
 import com.yheriatovych.reductor.Actions
 import com.yheriatovych.reductor.Dispatcher
@@ -20,7 +20,7 @@ class MainViewModel(private val dispatcher: Dispatcher,
 
     val throwable: Subject<Throwable> = PublishSubject.create()
     val city: Subject<String> = BehaviorSubject.create()
-    val currentConditions: Subject<Weather> = BehaviorSubject.create()
+    val currentConditions: Subject<WeatherConditions> = BehaviorSubject.create()
 
     @VisibleForTesting
     val disposables = CompositeDisposable()

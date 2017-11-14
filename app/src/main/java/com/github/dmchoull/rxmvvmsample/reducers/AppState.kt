@@ -1,5 +1,5 @@
 package com.github.dmchoull.rxmvvmsample.reducers
 
-import com.github.dmchoull.rxmvvmsample.api.Weather
+import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
 
-data class AppState(val city: String?, val currentConditions: Weather?)
+data class AppState(val city: String?, val currentConditions: WeatherConditions?)

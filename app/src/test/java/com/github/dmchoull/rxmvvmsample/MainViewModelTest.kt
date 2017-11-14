@@ -1,8 +1,8 @@
 package com.github.dmchoull.rxmvvmsample
 
 import com.github.dmchoull.rxmvvmsample.actions.ApiActions
-import com.github.dmchoull.rxmvvmsample.api.Weather
 import com.github.dmchoull.rxmvvmsample.eventbus.EventBus
+import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
 import com.github.dmchoull.rxmvvmsample.reducers.AppState
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -13,6 +13,7 @@ import io.reactivex.observers.TestObserver
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.util.*
 
 internal class MainViewModelTest {
     private val apiActions = Actions.from(ApiActions::class.java)
@@ -50,10 +51,10 @@ internal class MainViewModelTest {
     @Test
     @DisplayName("publishes state changes to current weather conditions")
     fun publishesCurrentConditions() {
-        val weather = Weather(-5.0, 1034.0, 41.0, -5.0, -3.0)
+        val weather = WeatherConditions(3.98, 1028.0, 75.0, 2.6, Date(1510661466L), Date(1510696366L))
         val viewModel = MainViewModel(dispatcher, Observable.just(AppState(null, weather)), eventBus)
 
-        val testObserver = TestObserver<Weather>()
+        val testObserver = TestObserver<WeatherConditions>()
         viewModel.currentConditions.subscribe(testObserver)
 
         viewModel.init()

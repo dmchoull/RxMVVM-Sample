@@ -13,26 +13,23 @@ internal class WeatherReducerTest {
     private val apiActions = Actions.from(ApiActions::class.java)
 
     @Test
-    @DisplayName("Sets the initial state")
+    @DisplayName("sets the initial state")
     fun initialState() {
-        val action = apiActions.lookupCurrentWeather("Toronto")
-        val initialState = reducer.reduce(null, action)
+        val initialState = reducer.initialState()
 
-        assertThat(initialState.city).isNull()
-        assertThat(initialState.currentConditions).isNull()
+        assertThat(initialState).isEqualTo(AppState(null, null))
     }
 
     @Test
-    @DisplayName("Updates the state from an API response")
+    @DisplayName("updates the state from an API response")
     fun currentWeatherResponse() {
-        val currentState = AppState(null, null)
         val response = buildWeatherResponse()
+        val currentState = AppState(null, null)
+        val expectedState = AppState(response.name, WeatherConditions.build(response))
 
         val action = apiActions.currentWeatherResponse(response)
+        val state = reducer.reduce(currentState, action)
 
-        val (city, currentConditions) = reducer.reduce(currentState, action)
-
-        assertThat(city).isEqualTo(response.name)
-        assertThat(currentConditions).isEqualTo(WeatherConditions.build(response))
+        assertThat(state).isEqualTo(expectedState)
     }
 }

@@ -24,7 +24,7 @@ private fun <T : ViewModel> getViewModel(activity: FragmentActivity, factory: Vi
 
 private class ViewModelFactory(private val kodein: Kodein) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val provider: () -> ViewModel = kodein.provider(modelClass.simpleName)
         return provider() as T
     }

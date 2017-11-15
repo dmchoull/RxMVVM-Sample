@@ -23,7 +23,7 @@ class MainViewModel(private val dispatcher: Dispatcher,
     val currentConditions: Subject<WeatherConditions> = BehaviorSubject.create()
 
     @VisibleForTesting
-    val disposables = CompositeDisposable()
+    internal val disposables = CompositeDisposable()
 
     private val apiActions = Actions.from(ApiActions::class.java)
 

@@ -3,6 +3,7 @@ package com.github.dmchoull.rxmvvmsample
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.support.annotation.VisibleForTesting
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -25,7 +26,9 @@ import java.util.*
 class MainActivity : KodeinAppCompatActivity() {
     internal val viewModel: MainViewModel by with(this as Activity).instance()
 
-    private val disposables = CompositeDisposable()
+    @VisibleForTesting
+    internal val disposables = CompositeDisposable()
+
     private val dateFormat = SimpleDateFormat("h:mm a z", Locale.US)
 
     override fun provideOverridingModule() = Kodein.Module {
@@ -36,6 +39,7 @@ class MainActivity : KodeinAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        viewModel.init()
     }
 
     override fun onStart() {
@@ -65,8 +69,6 @@ class MainActivity : KodeinAppCompatActivity() {
                         .doOnNext({ _ -> onRequestCompleted() })
                         .subscribe(this::showError)
         )
-
-        viewModel.init()
     }
 
     private fun onRequestStarted() {

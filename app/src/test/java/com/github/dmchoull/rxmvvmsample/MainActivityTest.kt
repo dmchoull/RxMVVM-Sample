@@ -2,8 +2,12 @@ package com.github.dmchoull.rxmvvmsample
 
 import android.widget.Button
 import android.widget.TextView
+import com.github.dmchoull.rxmvvmsample.models.WeatherConditions
+import com.github.dmchoull.rxmvvmsample.util.buildWeatherResponse
 import com.nhaarman.mockito_kotlin.verify
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.ResponseBody
+import org.assertj.android.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.jupiter.api.DisplayName
@@ -16,11 +20,60 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class)
 internal class MainActivityTest {
-    private val activity: MainActivity = Robolectric.setupActivity(MainActivity::class.java)
+    private val activityController = Robolectric.buildActivity(MainActivity::class.java).setup()
+    private val activity: MainActivity = activityController.get()
+
+    @Test
+    @DisplayName("calls init on view model when created")
+    fun initsViewModelOnCreate() {
+        verify(activity.viewModel).init()
+    }
+
+    @Test
+    @DisplayName("current weather conditions are initially not displayed")
+    fun currentConditionsInitiallyInvisible() {
+        Assertions.assertThat(activity.currentConditionsTitle).isInvisible
+        Assertions.assertThat(activity.currentTempLabel).isInvisible
+        Assertions.assertThat(activity.currentTemperature).isInvisible
+        Assertions.assertThat(activity.pressureLabel).isInvisible
+        Assertions.assertThat(activity.pressure).isInvisible
+        Assertions.assertThat(activity.humidityLabel).isInvisible
+        Assertions.assertThat(activity.humidity).isInvisible
+        Assertions.assertThat(activity.sunriseLabel).isInvisible
+        Assertions.assertThat(activity.sunrise).isInvisible
+        Assertions.assertThat(activity.sunsetLabel).isInvisible
+        Assertions.assertThat(activity.sunset).isInvisible
+    }
+
+    @Test
+    @DisplayName("current weather conditions are displayed after being observed")
+    fun currentConditionsDisplayed() {
+        val weatherConditions = WeatherConditions.build(buildWeatherResponse())
+        activity.viewModel.currentConditions.onNext(weatherConditions)
+
+        Assertions.assertThat(activity.currentTempLabel).isVisible
+        Assertions.assertThat(activity.currentTemperature).isVisible
+        Assertions.assertThat(activity.currentTemperature).hasText("-4.0˚C")
+
+        Assertions.assertThat(activity.pressureLabel).isVisible
+        Assertions.assertThat(activity.pressure).isVisible
+        Assertions.assertThat(activity.pressure).hasText("1034.0")
+
+        Assertions.assertThat(activity.humidityLabel).isVisible
+        Assertions.assertThat(activity.humidity).isVisible
+        Assertions.assertThat(activity.humidity).hasText("41.0")
+
+        Assertions.assertThat(activity.sunriseLabel).isVisible
+        Assertions.assertThat(activity.sunrise).isVisible
+        Assertions.assertThat(activity.sunrise).hasText("7:06 AM EST")
+
+        Assertions.assertThat(activity.sunsetLabel).isVisible
+        Assertions.assertThat(activity.sunset).isVisible
+        Assertions.assertThat(activity.sunset).hasText("4:56 PM EST")
+    }
 
     @Test
     @DisplayName("calls search on view model with current query when search button is clicked")
@@ -35,9 +88,12 @@ internal class MainActivityTest {
     @DisplayName("updates display when city changes")
     fun cityChanged() {
         val title = activity.findViewById<TextView>(R.id.currentConditionsTitle)
+        Assertions.assertThat(activity.currentConditionsTitle).isInvisible
 
         activity.viewModel.city.onNext("Toronto")
         assertThat(title.text).contains("Toronto")
+
+        Assertions.assertThat(activity.currentConditionsTitle).isVisible
 
         activity.viewModel.city.onNext("Mississauga")
         assertThat(title.text).contains("Mississauga")
@@ -83,5 +139,16 @@ internal class MainActivityTest {
 
         val toast = ShadowToast.getTextOfLatestToast()
         assertThat(toast).isEqualTo(activity.getString(R.string.something_went_wrong))
+    }
+
+    @Test
+    @DisplayName("clears subscribed disposables when onStop is called")
+    fun onStopClears() {
+        assertThat(activity.disposables.size()).isNotZero()
+
+        activityController.stop()
+
+        assertThat(activity.disposables.size()).isZero()
+        assertThat(activity.disposables.isDisposed).isFalse()
     }
 }
